@@ -214,6 +214,7 @@ flowlogs
 forScore
 fsck
 fugazi
+ghostty
 hannelorebohlig
 hostname
 htaccess
@@ -261,6 +262,7 @@ prodvmc
 rc
 reMarkable
 refactorings
+retirement
 sarabande
 scp
 sed
@@ -275,6 +277,7 @@ supercedes
 systemd
 t2
 telegraf
+terminfo
 tmux
 tomcat8
 trackpad
