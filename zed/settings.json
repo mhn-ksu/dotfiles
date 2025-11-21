@@ -4,34 +4,14 @@
     "default_model": {
       "provider": "zed.dev",
       "model": "claude-sonnet-4"
-    },
-    "version": "2"
+    }
   },
   "ssh_connections": [
     {
-      "host": "ts-wasabi",
-      "projects": [
-        {
-          "paths": [
-            "~/code"
-          ]
-        }
-      ]
-    },
-    {
-      "host": "mhn-linux-admin.aws.ksu.edu",
-      "args": [
-        "-i",
-        "~/.ssh/mhn-admin-linux.pem"
-      ],
-      "projects": [
-        {
-          "paths": [
-            "~/code"
-          ]
-        }
-      ],
-      "nickname": "admin"
+      "host": "10.251.144.78",
+      "username": "mhn",
+      "args": [],
+      "projects": []
     }
   ],
   "base_keymap": "VSCode",
@@ -210,7 +190,7 @@
     "git_status": true,
     "default_width": 500
   },
-  "relative_line_numbers": true,
+  "relative_line_numbers": "enabled",
   "remove_trailing_whitespace_on_save": true,
   "scrollbar": {
     "show": "auto",
