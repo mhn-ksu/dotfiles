@@ -1,4 +1,43 @@
 # Chef functions {{{
+#  find nodes and open in tmux
+ function kntmux() {
+   local query="$1"
+
+   if [ -z "$query" ]; then
+     echo "Usage: kntmux <partial_hostname>>"
+     return 1
+   fi
+
+   if [ -z "$TMUX" ]; then
+     echo "This function must be run inside a tmux session."
+     return 1
+   fi
+
+   # get list of FQDNs from knife
+   mapfile -t hosts < <(
+     knife search node "name:*${query}*" -F json \
+       | jq -r '.rows[].automatic.fqdn // .ros[].name'
+   )
+
+   if [ ${#hosts[@]} -eq 0 ]; then
+     echo "No hosts found for query: $query"
+     return 1
+   fi
+
+   local first=true
+
+   for host in "${hosts[@]}"; do
+     if $first; then
+       tmux send-keys "ssh $host" C-m
+       first=false
+    else
+      tmux split-window -v "ssh $host"
+      tmux select-layout even-vertical
+     fi
+   done
+   tmux set-window-option -t :$ synchronize
+ }
+
  function knhost() {
    sed -e 's/.*://' -e 's/.*items found//'
  }
