@@ -163,14 +163,15 @@ alias cssh="chmod 600 ~/.dotfiles/ssh/config >/dev/null 2>&1 && chmod 600 ~/.dot
 
 # }}}
 # Jujutsu (jj) {{{
-alias jn='jj new'
-alias jp='jj git push'
-alias js='jj st'
+# alias jn='jj new'
+# alias jp='jj git push'
+# alias js='jj st'
 alias jl='jj log'
-alias jh="jj short -r all'()'"
-
-## pull up the nearest bookmarks to the working-copy parent
-alias jbm="jj bookmark move --from 'heads(::@- & bookmarks())' --to @-"
+# # alias jh="jj short -r all'()'"
+alias jh="jj history -r all'()'"
+#
+# ## pull up the nearest bookmarks to the working-copy parent
+# alias jbm="jj bookmark move --from 'heads(::@- & bookmarks())' --to @-"
 
 # }}}
 # Cargo / Rust {{{
