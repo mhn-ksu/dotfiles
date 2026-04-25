@@ -9,7 +9,7 @@ vim.keymap.set("n", "<leader>rn", function()
 end, { desc = "Toggle [R]elative line [N]umbers" })
 
 -- Remove search highlighting
-vim.keymap.set({ "n", "v", "i" }, "<Esc>", function()
+vim.keymap.set({ "n", "v" }, "<Esc>", function()
 	if vim.v.hlsearch == 1 then
 		vim.cmd("nohlsearch | redraw!")
 	end
@@ -18,6 +18,7 @@ end, { desc = "Remove search highlighting", expr = true, silent = true })
 
 -- Exit terminal mode with <ECC><ESC> instead of <c-\><c-n>
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+vim.keymap.set("t", "<C-w>h", "<C-\\><C-n><C-w>h", { desc = "Go to left window from terminal" })
 
 -- Use <Tab> and <Shift><Tab> to navigate tabs
 vim.keymap.set("n", "<Tab>", ":tabnext<cr>", { desc = "Go to next tab" })
