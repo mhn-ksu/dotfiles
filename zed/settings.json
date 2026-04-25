@@ -1,10 +1,31 @@
 {
+  "preview_tabs": {
+    "enabled": false,
+  },
+  "vim_mode": true,
+  "session": {
+    "trust_all_worktrees": true,
+  },
+  "buffer_font_family": "Intel One Mono",
+  "project_panel": {
+    "dock": "left",
+  },
+  "outline_panel": {
+    "dock": "left",
+  },
+  "collaboration_panel": {
+    "dock": "left",
+  },
+  "git_panel": {
+    "dock": "left",
+  },
   "agent_buffer_font_size": 14.0,
   "vim": {
     "toggle_relative_line_numbers": true,
   },
   "theme": "Ayu Dark",
   "agent": {
+    "dock": "right",
     "default_model": {
       "provider": "ollama",
       "model": "deepseek-coder:6.7b",
@@ -72,6 +93,9 @@
     "buffer_line_height": "comfortable",
     "cursor_blink": false,
     "enable_language_server": true,
+    "edit_predictions": {
+      "mode": "subtle",
+    },
     "features": {
       "copilot": false,
     },
@@ -268,7 +292,7 @@
     "terminal": {
       "blinking": "off",
       "copy_on_select": true,
-      "dock": "bottom",
+      "dock": "right",
       "default_width": 640,
       "default_height": 320,
       "font_family": "Hack Nerd Font Mono",
