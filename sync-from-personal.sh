@@ -15,7 +15,7 @@ UPSTREAM_REF="$UPSTREAM_REMOTE/$UPSTREAM_BRANCH"
 
 # get a list of files changed in upstream since the last merge-base
 MERGE_BASE=$(git merge-base HEAD "$UPSTREAM_REF")
-CHANGED_FILES=$(git diff --name-only "$MERGE_BASE" "#UPSTREAM_REF")
+CHANGED_FILES=$(git diff --name-only "$MERGE_BASE" "$UPSTREAM_REF")
 
 echo "Files changed upstream since last sync:"
 echo "$CHANGED_FILES"
