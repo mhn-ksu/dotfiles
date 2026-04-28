@@ -100,6 +100,7 @@ MailMate
 Maildir
 MandoLessons
 Matomo
+Metadata
 Muchly
 MySQL
 NIST
@@ -132,6 +133,7 @@ RACI
 README
 RHEL
 Rakefile
+ReplicaSet
 RocketChat
 Rollout
 Romberg
@@ -181,6 +183,7 @@ Wellbutrin
 Wildfly
 X11
 XDR
+YAML
 ZStack
 Zabbix
 Zabel
@@ -227,7 +230,9 @@ iPadPro
 iPads
 imapsync
 isync
+iterable
 jonathankuder
+journaling
 ketamine
 ksu
 lua
@@ -242,6 +247,7 @@ mbsync
 mediasite
 msmtp
 nagios
+namespace
 neomutt
 neovim
 nerdliness
@@ -257,12 +263,12 @@ p12
 pannus
 passthrough
 pci
+performant
 perl
 prodvmc
 rc
 reMarkable
 refactorings
-retirement
 sarabande
 scp
 sed
@@ -286,6 +292,7 @@ txt
 uAchieve
 undeploy
 urlview
+urtext
 vBlock
 vRNI
 vSphere
@@ -299,8 +306,3 @@ wildfly
 wireshark
 www
 zanshin
-Kubernetes
-YAML
-Metadata
-ReplicaSet
-namespace

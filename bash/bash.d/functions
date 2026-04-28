@@ -1,3 +1,5 @@
+# vim: ft=bash
+
 # Chef functions {{{
 #  find nodes and open in tmux
  function kntmux() {
@@ -133,60 +135,130 @@ function jc() {
   jj commit -m "$*"
 }
 
-#}}}
-# Hugo {{{
-# d is for draft
-function hd() {
-    grep -ril content/posts -e "^draft"
-    grep -ril content/links -e "^draft"
-    grep -ril content/videos -e "^draft"
+function jtug () {
+  jj bookmark move --bookmark "$1" --to @-
+} 
+
+jj-short() {
+  jj short -r all'()' "$@" | awk '
+  {
+    # Capture the leading symbol (@ or ○ etc) and change id
+    lead = $1
+    change_id = $2
+    author = $3
+
+    # Reconstruct "time ago" - find the word "ago" and grab everything before it
+    ago_idx = 0
+    for (i = 4; i <= NF; i++) {
+      if ($i == "ago") { ago_idx = i; break }
+    }
+
+    time_str = ""
+    for (i = 4; i <= ago_idx; i++) {
+      time_str = (i == 4) ? $i : time_str " " $i
+    }
+
+    rest = ""
+    for (i = ago_idx + 1; i <= NF; i++) {
+      rest = (i == ago_idx + 1) ? $i : rest " " $i
+    }
+
+    lines[NR] = lead " " change_id " " author
+    times[NR] = time_str " ago"
+    rests[NR] = rest
+
+    tlen = length(time_str " ago")
+    if (tlen > max_t) max_t = tlen
+  }
+  END {
+    for (i = 1; i <= NR; i++) {
+      printf "%s  %-*s  %s\n", lines[i], max_t, times[i], rests[i]
+    }
+  }
+  '
 }
 
-# b is for build
-function hb() {
+#}}}
+# Hugo {{{
+function deploy() {
+  local dry_run_args=("--dry-run")
+  if [[ "$1" == "--go" ]]; then
+    dry_run_args=()
+  fi
+  rsync -azr --delete --include='.*' --info=name,stats2 "${dry_run_args[@]}" public/ pair:~/public_html/zanshin
+}
+
+function drafts() {
+  grep -ril content/ -e "^draft:"
+}
+
+function build() {
     hugo --cleanDestinationDir
 }
 
+function create() {
+# create [post|link|video|note] <title>
+  local type="$1"
+  local title="$2"
+
+  case "$type" in
+    post)  local archetype="posts" ;;
+    link)  local archetype="links" ;;
+    video) local archetype="videos" ;;
+    note)  local archetype="notes" ;;
+    *)     echo "Unknown type: $type"; return 1 ;;
+  esac
+
+  # from https://onebite.dev/create-new-hugo-post-faster-with-bash/
+  # replace alphanumeric words with a dash, compress repeated dashes to a single
+  # dash, replace capital letters with lower case
+  post=$(echo "$title" | sed -e 's/[^[:alnum:]]/-/g' | tr -s '-' | tr '[:upper:]' '[:lower:]').md
+  hugo new "$archetype"/"$post"
+  nvim content/"$archetype"/"$post"
+}
+
 # r is for rsync
-function hr() {
-    # rsync -azrP --delete public/* pair:~/public_html/zanshin
-    echo "rsync -azrP --delete public/* pair:~/public_html/$1"
-    rsync -azrP --delete public/* pair:~/public_html/$1
-}
-
-function hugonp() {
-    str="$*"
-    # from https://onebite.dev/create-new-hugo-post-faster-with-bash/
-    # replace alphanumeric words with a dash, compress repeated dashes to a single
-    # dash, replace capital letters with lower case
-    post=$(echo $str | sed -e 's/[^[:alnum:]]/-/g' | tr -s '-' | tr A-Z a-z.md).md
-    hugo new posts/$post
-    nvim content/posts/$post
-}
-
+# function hr() {
+#     # rsync -azrP --delete public/* pair:~/public_html/zanshin
+#     echo "rsync -azrP --delete public/ pair:~/public_html/$1"
+#     rsync -azrP --delete public/ pair:~/public_html/$1
+# }
+#
+# function hugonp() {
+#     str="$*"
+#     # from https://onebite.dev/create-new-hugo-post-faster-with-bash/
+#     # replace alphanumeric words with a dash, compress repeated dashes to a single
+#     # dash, replace capital letters with lower case
+#     post=$(echo $str | sed -e 's/[^[:alnum:]]/-/g' | tr -s '-' | tr A-Z a-z.md).md
+#     hugo new posts/$post
+#     nvim content/posts/$post
+# }
+#
 # p is for post
-function hp() {
-    str="$*"
-    post=$(echo $str | sed -e 's/[^[:alnum:]]/-/g' | tr -s '-' | tr A-Z a-z.md).md
-    hugo new posts/$post
-    nvim content/posts/$post
-}
+# function hp() {
+#     str="$*"
+#     # post=$(echo $str | sed -e 's/[^[:alnum:]]/-/g' | tr -s '-' | tr A-Z a-z.md).md
+#     post=$(echo "$str" | sed -e 's/[^[:alnum:]]/-/g' | tr -s '-' | tr '[:upper:]' '[:lower:]').md
+#     hugo new posts/$post
+#     nvim content/posts/$post
+# }
+#
+# # l is for link
+# function hl() {
+#     str="$*"
+#     post=$(echo $str | sed -e 's/[^[:alnum:]]/-/g' | tr -s '-' | tr A-Z a-z.md).md
+#     hugo new links/$post
+#     nvim content/links/$post
+# }
+#
+# # v is for video
+# function hv() {
+#     str="$*"
+#     post=$(echo $str | sed -e 's/[^[:alnum:]]/-/g' | tr -s '-' | tr A-Z a-z.md).md
+#     hugo new videos/$post
+#     nvim content/videos/$post
+# }
 
-# l is for link
-function hl() {
-    str="$*"
-    post=$(echo $str | sed -e 's/[^[:alnum:]]/-/g' | tr -s '-' | tr A-Z a-z.md).md
-    hugo new links/$post
-    nvim content/links/$post
-}
-
-# v is for video
-function hv() {
-    str="$*"
-    post=$(echo $str | sed -e 's/[^[:alnum:]]/-/g' | tr -s '-' | tr A-Z a-z.md).md
-    hugo new videos/$post
-    nvim content/videos/$post
-}
 # }}}
 # Dash functions {{{
 # Open argument in Dash
@@ -270,9 +342,9 @@ function loc() {
     lines=`find-exec "*$ext" cat | wc -l`
     lines=${lines// /}
     total=$(($total + $lines))
-    echo "Lines of code for ${fg[blue]}$ext${reset_color}: ${fg[green]}$lines${reset_color}"
+    echo "Lines of code for $BLUE$ext$Color_Off: $GREEN$lines$Color_Off"
   done
-  echo "${fg[blue]}Total${reset_color} lines of code: ${fg[green]}$total${reset_color}"
+  echo "$BLUETotal$Color_Off lines of code: $GREEN$total$Color_Off"
 }
 
 # }}}
@@ -337,7 +409,7 @@ local reset_color="\033[0m"
 # }}}
 # Mac specific functions {{{
 myos=`uname -s`
-if [[ "myos" == "Darwin" ]]; then
+if [[ "$myos" == "Darwin" ]]; then
 
   # view man pages in Preview
   pman() { ps=`mktemp -t manpageXXXX`.ps ; man -t $@ > "$ps" ; open "$ps" ; }
@@ -648,21 +720,6 @@ color() {
 }
 
 # }}}
-# Jekyll helpers {{{
-draft() {
-  rake draft["$1"]
-}
-publish() {
-  rake publish
-}
-deploy() {
-  rake deploy
-}
-build() {
-  rake build
-}
-
-# }}}
 # mtr function {{{
 netwtf() {
   # if [[ "$myos" == "Darwin" ]]; then
@@ -917,3 +974,89 @@ awss() {
 # }}}
 
 # vim: set filetype=bash :
+=======
+# Docker functions {{{
+
+#!/bin/bash
+# Bash wrappers for docker run commands
+
+# Helper functions
+dcleanup() {
+  docker rm -v $(docker ps --filter status=exited -q 2>/dev/null) 2>/dev/null
+  docker rmi $(docker images --filter dangling=true -q 2>/dev/null) 2>/dev/null
+}
+
+del_stopped() {
+  local name=$1
+  local state=$(docker inspect --format "{{.State.Running}" $name 2>/dev/null)
+
+  if [[ "$state" == "false" ]] ; then
+    docker rm $name
+  fi
+}
+
+relies_on() {
+  local containers=$@
+
+  for container in $containers; do
+    local state=$(docker inspect --format "{{.State.Running}}" $container 2>/dev/null)
+
+    if [[ "$state" == "false" ]] || [[ "$state" == "" ]]; then
+      echo "$container is not running, starting it for you."
+      $container
+    fi
+  done
+}
+
+cows() {
+  docker run --rm -it \
+         --name cowsay \
+         zanshin/cowsay
+}
+
+# chrome() {
+#   # add flags for proxy if passed
+#   local proxy=
+#   local map=
+#   local args=$@
+#   if [[ "$1" == "tor" ]]; then
+#     relies_on torproxy
+#
+#     map="MAP * ~NOTFOUND , EXCLUDE torproxy"
+#     proxy="socks5://torproxy:9050"
+#     args="https://check.torproject.org/api/ip ${@:2}"
+#   fi
+#
+#   del_stopped chrome
+#
+#   sudo docker run -d \
+#     --memory 3gb \
+#     -v /etc/localtime:/etc/localtime:ro \
+#     -v /tmp/.X11-unix:/tmp/X11-unix \
+#     -e DISPLAY=unix$DISPLAY \
+#     -v $HOME/Downloads:/root/Downloads \
+#     -v $HOME/Pictures:/root/Pictures \
+#     -v $HOME/Torrents:/root/Torrents \
+#     -v $HOME/.chrome:/data \
+#     -v /dev/shm:/dev/shm \
+#     -v /etc/hosts:/etc/hosts \
+#     --device /dev/snd \
+#     --device /dev/dri \
+#     --device /dev/video0 \
+#     --group-add audio \
+#     --group-add video \
+#     --name chrome \
+#     jess/chrome --user-data-dir=/data \
+#     --proxy-server="$proxy" \
+#     --host-resolver-rules="$map" "$args"
+# }
+
+# htop() {
+#   docker run --rm -it \
+#          --pid host \
+#          --net none \
+#          --name htop \
+#          zanshin/htop
+# }
+
+# }}}
