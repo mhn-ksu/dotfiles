@@ -28,7 +28,7 @@ config.scrollback_lines = 10000
 -- fonts
 -- config.font = wezterm.font 'JetBrainsMonoNL Nerd Font'
 config.font = wezterm.font("Intel One Mono", { weight = "Regular", italic = false })
-config.font_size = 15
+config.font_size = 16
 config.line_height = 1.05
 
 -- tabs
