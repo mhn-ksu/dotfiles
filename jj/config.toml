@@ -19,18 +19,46 @@ commit_id = "blue"
 change_id = "red"
 prefix = { bold = true }
 rest = "#566573"
+hint = "#eba400"
 # "working_copy commit_id" = { underline = true }
 
 [aliases]
 # Find the closest ancestor with a bookmark pointing at it, and move it to the
 # parent of the working copy.
-tug = ["bookmark", "move", "--from", "heads(::@- & bookmarks())", "--to", "@-"]
+# tug = ["bookmark", "move", "--from", "heads(::@- & bookmarks())", "--to", "@-"]
+tug = ["bookmark", "move", "--to", "@-", "-- -b"]
 long = ["log", "-T", "builtin_log_detailed"]
 short = ["log", "-T", "builtin_log_oneline"]
+
+  # ++ if(committer.timestamp().ago().contains("day") || committer.timestamp().ago().contains("week"),
+  #     "\t\t",
+  #     "\t",
+  #   )
+
+history = ["log", "-T", '''
+  change_id.shortest(12)
+  ++ " " ++ commit_id.shortest(12)
+  ++ "  " ++ committer.timestamp().ago()
+  ++ if(author.email() != "mark@zanshin.net",
+      " " ++ author.email().local(),
+      "",
+    )
+  ++ " " ++ if(bookmarks, bookmarks ++ " ", "")
+  ++ " " ++ if(description,
+      description.first_line(),
+      label("hint", "(no description set)"),
+    )
+''']
 
 [template-aliases]
 'format_short_signature(signature)' = "signature"
 'format_timestamp(timestamp)' = "timestamp.ago()"
 'format_short_id(id)' = "id.shortest(12)"
+'format_short_description(description)' = '''
+  if(description, description.first_line(), "(no description set)")
+'''
 # 'format_short_id(id)' = 'id.shortest(12).prefix() ++ "[" ++ id.shortest(12).rest() ++ "]"'
+
+[remotes.origin]
+auto-track-bookmarks = "*"
 

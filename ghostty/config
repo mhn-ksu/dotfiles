@@ -7,13 +7,21 @@ background-opacity = 0.95
 
 cursor-style-blink = false
 
+link-url = true
+
 quick-terminal-position = center
 keybind = global:cmd+opt+ctrl+backslash=toggle_quick_terminal
 
+<<<<<<< HEAD
 keybind = ctrl+h=goto_split:left
 keybind = ctrl+j=goto_split:bottom
 keybind = ctrl+k=goto_split:top
 keybind = ctrl+l=goto_split:right
+=======
+# work-around for cmd-k intercepting ctrl-k
+keybind = super+k=unbind
+keybind = super+l=clear_screen
+>>>>>>> 97daf2be5fb005ba0782aec7868a99a90bdfb6e1
 
 # title = " "
 macos-titlebar-style = tabs
