@@ -63,6 +63,7 @@ Host admin
     User mhn
     IdentityFile ~/.ssh/mhn-admin-linux-al23.pem
     PubKeyAuthentication yes
+    WarnWeakCrypto no-pq-kex
     # HostKeyAlgorithms ecdsa-sha2-nistp256,ssh-ed25519
     # PubkeyAcceptedKeyTypes ecdsa-sha2-nistp256,ssh-ed25519
     # ChallengeResponseAuthentication yes
