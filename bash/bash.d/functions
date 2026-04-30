@@ -974,7 +974,6 @@ awss() {
 # }}}
 
 # vim: set filetype=bash :
-=======
 # Docker functions {{{
 
 #!/bin/bash
